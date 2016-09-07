@@ -2,7 +2,7 @@ FROM php:5.6-apache
 MAINTAINER kilhog@protonmail.com
 
 ENV BOOKSTACK BookStack
-ENV BOOKSTACK_VERSION 0.9.2
+ENV BOOKSTACK_VERSION 0.12.1
 
 RUN apt-get update && apt-get install -y git zlib1g-dev libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng12-dev wget \
    && docker-php-ext-install pdo pdo_mysql mbstring zip \
@@ -18,10 +18,13 @@ RUN apt-get update && apt-get install -y git zlib1g-dev libfreetype6-dev libjpeg
    && apt-get clean \
    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN rm -f /etc/apache2/sites-enabled/000-default.conf
 COPY bookstack.conf /etc/apache2/sites-enabled/bookstack.conf
 RUN a2enmod rewrite
 
 COPY docker-entrypoint.sh /
+
+VOLUME ["/var/www/BookStack/public/uploads"]
 
 EXPOSE 80
 
